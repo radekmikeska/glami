@@ -1,0 +1,61 @@
+type Query {
+  categories(input: PaginationInput!): CategoriesResult!
+}
+
+type Mutation {
+  createCategory(input: CreateCategoryInput!): CreateCategoryResult!
+  updateCategory(input: UpdateCategoryInput!): UpdateCategoryResult!
+  deleteCategory(categoryId: ID!): DeleteCategoryResult!
+}
+
+union CreateCategoryResult = Category | PercentageOutOfRange | InternalError
+union UpdateCategoryResult = Category | PercentageOutOfRange | DocumentNotFound | InternalError
+union DeleteCategoryResult = Category | DocumentNotFound | InternalError
+union CategoriesResult = CategoriesList | InternalError
+
+type CategoriesList {
+  items: [Category!]!
+  count: Int!
+  pageNum: Int!
+  pageSize: Int!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  percentage: Int!
+}
+
+type PercentageOutOfRange {
+  message: String!
+  lowerBound: Int!
+  upperBound: Int!
+}
+
+type DocumentNotFound {
+  message: String!
+}
+
+type InternalError {
+  code: Int!
+  message: String!
+}
+
+
+# INPUTS #
+
+input PaginationInput {
+  pageNum: Int = 0
+  pageSize: Int = 10
+}
+
+input CreateCategoryInput {
+  name: String!
+  percentage: Int!
+}
+
+input UpdateCategoryInput {
+  categoryId: ID!
+  name: String
+  percentage: Int
+}
